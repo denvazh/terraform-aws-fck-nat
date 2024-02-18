@@ -85,6 +85,12 @@ resource "aws_launch_template" "main" {
     TERRAFORM_CWAGENT_CFG_PARAM_NAME = local.cwagent_param_name != null ? local.cwagent_param_name : ""
   }))
 
+  # Enforce IMDSv2
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
   tags = var.tags
 }
 
@@ -94,6 +100,12 @@ resource "aws_instance" "main" {
   launch_template {
     id      = aws_launch_template.main.id
     version = aws_launch_template.main.latest_version
+  }
+
+  # Enforce IMDSv2
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   tags = var.tags
